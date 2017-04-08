@@ -118,18 +118,18 @@ class KvmGlobalConfigCase extends SubCase {
         action.hostUuid = hostSpec.inventory.uuid
         action.sessionId =  adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         action.name = "vm2"
         res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         action.name = "vm3"
         res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
-        res2.error != null
+        res2.error == null
         assert res2.value.availableMemory ==  SizeUtils.sizeStringToBytes("2G")
     }
     void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory(){
@@ -154,18 +154,18 @@ class KvmGlobalConfigCase extends SubCase {
         action.hostUuid = hostSpec.inventory.uuid
         action.sessionId =  adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         action.name = "vm2"
         res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         action.name = "vm3"
         res = action.call()
-        assert res.error !=null
+        assert res.error ==null
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
-        res2.error != null
+        res2.error == null
         assert res2.value.availableMemory ==  SizeUtils.sizeStringToBytes("2G")
     }
     @Override
