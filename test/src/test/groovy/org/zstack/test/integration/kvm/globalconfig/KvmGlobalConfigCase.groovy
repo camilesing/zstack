@@ -56,11 +56,11 @@ class KvmGlobalConfigCase extends SubCase {
                 name = "reservedMemory"
                 value = "2G"
             }
-            updateGlobalConfig {
-                category = "mevoco"
-                name = "overProvisioning.memory"
-                value = "2"
-            }
+//            updateGlobalConfig {
+//                category = "mevoco"
+//                name = "overProvisioning.memory"
+//                value = "2"
+//            }
             testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory()
         }
     }
