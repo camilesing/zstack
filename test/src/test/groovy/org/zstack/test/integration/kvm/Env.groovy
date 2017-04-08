@@ -234,7 +234,16 @@ use:
                 memory = SizeUnit.GIGABYTE.toByte(8)
                 cpu = 4
             }
-
+            instanceOffering {
+                name = "1CPU-2G"
+                memory = SizeUnit.GIGABYTE.toByte(2)
+                cpu = 1
+            }
+            instanceOffering {
+                name = "1CPU-4G"
+                memory = SizeUnit.GIGABYTE.toByte(4)
+                cpu = 1
+            }
             sftpBackupStorage {
                 name = "sftp"
                 url = "/sftp"
