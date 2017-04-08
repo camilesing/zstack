@@ -3,7 +3,6 @@ package org.zstack.test.integration.kvm.globalconfig
 
 import org.zstack.sdk.CreateVmInstanceAction
 import org.zstack.sdk.GetCpuMemoryCapacityAction
-import org.zstack.sdk.GlobalConfigInventory
 import org.zstack.sdk.UpdateGlobalConfigAction
 import org.zstack.test.integration.kvm.Env
 import org.zstack.testlib.EnvSpec
@@ -13,7 +12,7 @@ import org.zstack.testlib.InstanceOfferingSpec
 import org.zstack.testlib.L3NetworkSpec
 import org.zstack.testlib.SubCase
 import org.zstack.testlib.Test
-import org.zstack.utils.SizeUtils
+
 import static java.util.Arrays.asList
 
 class KvmGlobalConfigCase extends SubCase {
@@ -56,12 +55,12 @@ class KvmGlobalConfigCase extends SubCase {
                 name = "reservedMemory"
                 value = "2G"
             }
-//            updateGlobalConfig {
-//                category = "mevoco"
-//                name = "overProvisioning.memory"
-//                value = "2"
-//            }
-            testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory()
+            updateGlobalConfig {
+                category = "mevoco"
+                name = "overProvisioning.memory"
+                value = "2"
+            }
+            testReservedHostCapacityAndThenCreateVmSuccessWhenSetOverProvisioningMemory()
         }
     }
 
@@ -140,7 +139,7 @@ class KvmGlobalConfigCase extends SubCase {
         assert res2.value.availableMemory != 0
     }
 
-    void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory() {
+    void testReservedHostCapacityAndThenCreateVmSuccessWhenSetOverProvisioningMemory() {
         HostSpec hostSpec = env.specByName("kvm")
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
