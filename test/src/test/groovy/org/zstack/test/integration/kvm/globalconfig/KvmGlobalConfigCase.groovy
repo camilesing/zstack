@@ -44,23 +44,6 @@ class KvmGlobalConfigCase extends SubCase {
                 value = "2G"
             }
             testReservedHostCapacityAndThenCreateVmFailure()
-            updateGlobalConfig {
-                category = "kvm"
-                name = "reservedMemory"
-                value = "2G"
-            }
-            testReservedHostCapacityAndThenCreateVmSuccess()
-            updateGlobalConfig {
-                category = "kvm"
-                name = "reservedMemory"
-                value = "2G"
-            }
-            updateGlobalConfig {
-                category = "mevoco"
-                name = "overProvisioning.memory"
-                value = 2
-            }
-            testReservedHostCapacityAndThenCreateVmSuccessWhenSetOverProvisioningMemory()
         }
     }
 
@@ -111,58 +94,6 @@ class KvmGlobalConfigCase extends SubCase {
         action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
         assert res.error != null
-    }
-
-    void testReservedHostCapacityAndThenCreateVmSuccess() {
-        HostSpec hostSpec = env.specByName("kvm")
-        def action = new CreateVmInstanceAction()
-        action.name = "vm1"
-        action.instanceOfferingUuid = (env.specByName("1CPU-2G") as InstanceOfferingSpec).inventory.uuid
-        action.imageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
-        action.l3NetworkUuids = [(env.specByName("l3") as L3NetworkSpec).inventory.uuid]
-        action.hostUuid = hostSpec.inventory.uuid
-        action.sessionId = adminSession()
-        CreateVmInstanceAction.Result res = action.call()
-        assert res.error == null
-        action.name = "vm2"
-        res = action.call()
-        assert res.error == null
-        action.name = "vm3"
-        res = action.call()
-        assert res.error != null
-
-        GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
-        action2.hostUuids = asList(hostSpec.inventory.uuid)
-        action2.sessionId = adminSession()
-        GetCpuMemoryCapacityAction.Result res2 = action2.call()
-        res2.error == null
-        assert res2.value.availableMemory != 0
-    }
-
-    void testReservedHostCapacityAndThenCreateVmSuccessWhenSetOverProvisioningMemory() {
-        HostSpec hostSpec = env.specByName("kvm")
-        def action = new CreateVmInstanceAction()
-        action.name = "vm1"
-        action.instanceOfferingUuid = (env.specByName("1CPU-4G") as InstanceOfferingSpec).inventory.uuid
-        action.imageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
-        action.l3NetworkUuids = [(env.specByName("l3") as L3NetworkSpec).inventory.uuid]
-        action.hostUuid = hostSpec.inventory.uuid
-        action.sessionId = adminSession()
-        CreateVmInstanceAction.Result res = action.call()
-        assert res.error == null
-        action.name = "vm2"
-        res = action.call()
-        assert res.error == null
-        action.name = "vm3"
-        res = action.call()
-        assert res.error != null
-
-        GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
-        action2.hostUuids = asList(hostSpec.inventory.uuid)
-        action2.sessionId = adminSession()
-        GetCpuMemoryCapacityAction.Result res2 = action2.call()
-        res2.error == null
-        assert res2.value.availableMemory != 0
     }
 
     @Override
