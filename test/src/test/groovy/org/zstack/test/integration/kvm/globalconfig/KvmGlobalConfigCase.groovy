@@ -40,8 +40,28 @@ class KvmGlobalConfigCase extends SubCase {
     void test() {
         env.create {
             testLargeHostReservedMemory()
+            updateGlobalConfig {
+                category = "kvm"
+                name = "reservedMemory"
+                value = "2G"
+            }
             testReservedHostCapacityAndThenCreateVmFailure()
+            updateGlobalConfig {
+                category = "kvm"
+                name = "reservedMemory"
+                value = "2G"
+            }
             testReservedHostCapacityAndThenCreateVmSuccess()
+            updateGlobalConfig {
+                category = "kvm"
+                name = "reservedMemory"
+                value = "2G"
+            }
+            updateGlobalConfig {
+                category = "mevoco"
+                name = "overProvisioning.memory"
+                value = "2"
+            }
             testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory()
         }
     }
@@ -86,11 +106,11 @@ class KvmGlobalConfigCase extends SubCase {
         HostSpec hostSpec = env.specByName("kvm")
         hostSpec.totalCpu = 40
         hostSpec.totalMem = SizeUnit.GIGABYTE.toByte(8)
-        GlobalConfigInventory inv = updateGlobalConfig {
-            category = "kvm"
-            name = "reservedMemory"
-            value = "2G"
-        }
+//        GlobalConfigInventory inv = updateGlobalConfig {
+//            category = "kvm"
+//            name = "reservedMemory"
+//            value = "2G"
+//        }
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
         action.instanceOfferingUuid = (env.specByName("instanceOffering")as InstanceOfferingSpec).inventory.uuid
@@ -105,11 +125,6 @@ class KvmGlobalConfigCase extends SubCase {
         HostSpec hostSpec = env.specByName("kvm")
         hostSpec.totalCpu = 40
         hostSpec.totalMem = SizeUnit.GIGABYTE.toByte(8)
-        GlobalConfigInventory inv = updateGlobalConfig {
-            category = "kvm"
-            name = "reservedMemory"
-            value = "2G"
-        }
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
         action.instanceOfferingUuid = (env.specByName("1CPU-2G")as InstanceOfferingSpec).inventory.uuid
@@ -136,16 +151,7 @@ class KvmGlobalConfigCase extends SubCase {
         HostSpec hostSpec = env.specByName("kvm")
         hostSpec.totalCpu = 40
         hostSpec.totalMem = SizeUnit.GIGABYTE.toByte(8)
-        GlobalConfigInventory inv = updateGlobalConfig {
-            category = "kvm"
-            name = "reservedMemory"
-            value = "2G"
-        }
-        GlobalConfigInventory inv2 = updateGlobalConfig {
-            category = "mevoco"
-            name = "overProvisioning.memory"
-            value = "2"
-        }
+
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
         action.instanceOfferingUuid = (env.specByName("1CPU-4G")as InstanceOfferingSpec).inventory.uuid
