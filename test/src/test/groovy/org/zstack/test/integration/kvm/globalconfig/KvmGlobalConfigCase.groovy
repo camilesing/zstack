@@ -136,7 +136,8 @@ class KvmGlobalConfigCase extends SubCase {
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        assert res2.value.availableMemory == res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - vm1MeSize - vm2MeSize
+        Long value = res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - vm1MeSize - vm2MeSize
+        assert res2.value.availableMemory == value
     }
 
     void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory() {
@@ -160,7 +161,8 @@ class KvmGlobalConfigCase extends SubCase {
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        assert res2.value.availableMemory == res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - (vm1MeSize + vm2MeSize) / 2
+        Long value = res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - (vm1MeSize + vm2MeSize) / 2
+        assert res2.value.availableMemory == value
     }
 
     @Override
