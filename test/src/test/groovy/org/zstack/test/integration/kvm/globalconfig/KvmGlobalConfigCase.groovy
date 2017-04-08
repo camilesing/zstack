@@ -2,7 +2,6 @@ package org.zstack.test.integration.kvm.globalconfig
 
 
 import org.zstack.sdk.CreateVmInstanceAction
-import org.zstack.sdk.GetCpuMemoryCapacityAction
 import org.zstack.sdk.UpdateGlobalConfigAction
 import org.zstack.test.integration.kvm.Env
 import org.zstack.testlib.EnvSpec
@@ -13,7 +12,6 @@ import org.zstack.testlib.L3NetworkSpec
 import org.zstack.testlib.SubCase
 import org.zstack.testlib.Test
 
-import static java.util.Arrays.asList
 
 class KvmGlobalConfigCase extends SubCase {
     EnvSpec env
