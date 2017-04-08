@@ -125,19 +125,19 @@ class KvmGlobalConfigCase extends SubCase {
         action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
         assert res.error == null
-        Long vm1MeSize = res.value.inventory.memorySize
         action.name = "vm2"
         res = action.call()
         assert res.error == null
-        Long vm2MeSize = res.value.inventory.memorySize
+        action.name = "vm3"
+        res = action.call()
+        assert res.error != null
 
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        Long value = res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - vm1MeSize - vm2MeSize
-        assert res2.value.availableMemory == value
+        assert res2.value.availableMemory != 0
     }
 
     void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory() {
@@ -150,19 +150,20 @@ class KvmGlobalConfigCase extends SubCase {
         action.hostUuid = hostSpec.inventory.uuid
         action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        Long vm1MeSize = res.value.inventory.memorySize
+        assert res.error == null
         action.name = "vm2"
         res = action.call()
         assert res.error == null
-        Long vm2MeSize = res.value.inventory.memorySize
+        action.name = "vm3"
+        res = action.call()
+        assert res.error != null
 
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        Long value = res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - (vm1MeSize + vm2MeSize) / 2
-        assert res2.value.availableMemory == value
+        assert res2.value.availableMemory != 0
     }
 
     @Override
