@@ -14,8 +14,7 @@ import org.zstack.testlib.L3NetworkSpec
 import org.zstack.testlib.SubCase
 import org.zstack.testlib.Test
 import org.zstack.utils.SizeUtils
-import org.zstack.utils.data.SizeUnit
-import static java.util.Arrays.asList;
+import static java.util.Arrays.asList
 
 class KvmGlobalConfigCase extends SubCase {
     EnvSpec env
@@ -102,66 +101,68 @@ class KvmGlobalConfigCase extends SubCase {
         assert res4.error != null
     }
 
-    void testReservedHostCapacityAndThenCreateVmFailure(){
+    void testReservedHostCapacityAndThenCreateVmFailure() {
         HostSpec hostSpec = env.specByName("kvm")
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
-        action.instanceOfferingUuid = (env.specByName("instanceOffering")as InstanceOfferingSpec).inventory.uuid
+        action.instanceOfferingUuid = (env.specByName("instanceOffering") as InstanceOfferingSpec).inventory.uuid
         action.imageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
         action.l3NetworkUuids = [(env.specByName("l3") as L3NetworkSpec).inventory.uuid]
         action.hostUuid = hostSpec.inventory.uuid
-        action.sessionId =  adminSession()
+        action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        assert res.error !=null
+        assert res.error != null
     }
-    void testReservedHostCapacityAndThenCreateVmSuccess(){
+
+    void testReservedHostCapacityAndThenCreateVmSuccess() {
         HostSpec hostSpec = env.specByName("kvm")
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
-        action.instanceOfferingUuid = (env.specByName("1CPU-2G")as InstanceOfferingSpec).inventory.uuid
+        action.instanceOfferingUuid = (env.specByName("1CPU-2G") as InstanceOfferingSpec).inventory.uuid
         action.imageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
         action.l3NetworkUuids = [(env.specByName("l3") as L3NetworkSpec).inventory.uuid]
         action.hostUuid = hostSpec.inventory.uuid
-        action.sessionId =  adminSession()
+        action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        assert res.error ==null
+        assert res.error == null
+        Long vm1MeSize = res.value.inventory.memorySize
         action.name = "vm2"
         res = action.call()
-        assert res.error ==null
-        action.name = "vm3"
-        res = action.call()
-        assert res.error ==null
+        assert res.error == null
+        Long vm2MeSize = res.value.inventory.memorySize
+
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        assert res2.value.availableMemory ==  SizeUtils.sizeStringToBytes("2G")
+        assert res2.value.availableMemory == res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - vm1MeSize - vm2MeSize
     }
-    void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory(){
+
+    void testReservedHostCapacityAndThenCreateVmSuccessWhenOverProvisioningMemory() {
         HostSpec hostSpec = env.specByName("kvm")
         def action = new CreateVmInstanceAction()
         action.name = "vm1"
-        action.instanceOfferingUuid = (env.specByName("1CPU-4G")as InstanceOfferingSpec).inventory.uuid
+        action.instanceOfferingUuid = (env.specByName("1CPU-4G") as InstanceOfferingSpec).inventory.uuid
         action.imageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
         action.l3NetworkUuids = [(env.specByName("l3") as L3NetworkSpec).inventory.uuid]
         action.hostUuid = hostSpec.inventory.uuid
-        action.sessionId =  adminSession()
+        action.sessionId = adminSession()
         CreateVmInstanceAction.Result res = action.call()
-        assert res.error ==null
+        Long vm1MeSize = res.value.inventory.memorySize
         action.name = "vm2"
         res = action.call()
-        assert res.error ==null
-        action.name = "vm3"
-        res = action.call()
-        assert res.error ==null
+        assert res.error == null
+        Long vm2MeSize = res.value.inventory.memorySize
+
         GetCpuMemoryCapacityAction action2 = new GetCpuMemoryCapacityAction()
         action2.hostUuids = asList(hostSpec.inventory.uuid)
         action2.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res2 = action2.call()
         res2.error == null
-        assert res2.value.availableMemory ==  SizeUtils.sizeStringToBytes("2G")
+        assert res2.value.availableMemory == res2.value.totalMemory - SizeUtils.sizeStringToBytes("2G") - (vm1MeSize + vm2MeSize) / 2
     }
+
     @Override
     void clean() {
         env.delete()
