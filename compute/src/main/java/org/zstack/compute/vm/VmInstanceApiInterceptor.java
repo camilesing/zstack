@@ -3,6 +3,8 @@ package org.zstack.compute.vm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.zstack.core.cloudbus.CloudBus;
+import org.zstack.core.config.GlobalConfigVO;
+import org.zstack.core.config.GlobalConfigVO_;
 import org.zstack.core.db.DatabaseFacade;
 import org.zstack.core.db.Q;
 import org.zstack.core.db.SQL;
@@ -114,16 +116,7 @@ public class VmInstanceApiInterceptor implements ApiMessageInterceptor {
         if (cpuSum == null && memorySize == null) {
             return;
         }
-//        VmInstanceState vmState = Q.New(VmInstanceVO.class).select(VmInstanceVO_.state).eq(VmInstanceVO_.uuid, msg.getVmInstanceUuid()).findValue();
-        List<Tuple> tuples = SQL.New(
-                "select vm.state, global.value " +
-                        " from  VmInstanceVO vm, GlobalConfigVO global" +
-                        " where vm.uuid = :vuuid" +
-                        "and name=reservedMemory " +
-                        "and name=overProvisioning.memory " +
-                        "or name=cpu.overProvisioning.ratio", Tuple.class
-        ).param("vuuid", msg.getVmInstanceUuid()).find();
-        VmInstanceState vmState = (VmInstanceState) tuples.get(0).get(0);
+        VmInstanceState vmState = Q.New(VmInstanceVO.class).select(VmInstanceVO_.state).eq(VmInstanceVO_.uuid, msg.getVmInstanceUuid()).findValue();
         if (VmInstanceState.Stopped.equals(vmState)) {
             return;
         }
@@ -139,10 +132,11 @@ public class VmInstanceApiInterceptor implements ApiMessageInterceptor {
         Long availableMemory = (Long) result.get(1);
         Integer usedCpu = (Integer) result.get(2);
         Long usedMemory = (Long) result.get(3);
+        List<Tuple> tuples = SQL.New("select value from GlobalConfigVO where name=\"reservedMemory\"  or name=\"overProvisioning.memory\" or name=\"cpu.overProvisioning.ratio\"")
         Long reservedMemory = SizeUtils.sizeStringToBytes(
-                (String) tuples.get(0).get(1));
-        Double overProvisioningMemory = (Double) tuples.get(1).get(1);
-        Double overProvisioningCpu = (Double) tuples.get(2).get(1);
+                (String) tuples.get(0).get(0));
+        Double overProvisioningMemory = (Double) tuples.get(0).get(1);
+        Double overProvisioningCpu = (Double) tuples.get(0).get(2);
         Double totalMemory = (availableMemory + usedMemory - reservedMemory) * overProvisioningMemory;
         Double totalCpu = (availableCpu + usedCpu) * overProvisioningCpu;
         //需要考虑超分率和保留内存。大概就是（现有的availableMemory+ 使用的内存-保留内存）*超分率
