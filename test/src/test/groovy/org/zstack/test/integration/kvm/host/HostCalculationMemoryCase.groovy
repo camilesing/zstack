@@ -138,7 +138,7 @@ class HostCalculationMemoryCase extends SubCase {
         getCpuMemoryCapacityAction.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res = getCpuMemoryCapacityAction.call()
         assert res.error == null
-        assert res.value.totalMemory == SizeUnit.GIGABYTE.toByte(24 - 3)
+        assert res.value.availableMemory == SizeUnit.GIGABYTE.toByte(24 - 3)
         // Three Host of 8G memory ,reserved memory = 3*1 = 3
         CreateVmInstanceAction createVmInstanceAction = new CreateVmInstanceAction()
         createVmInstanceAction.name = "vm1"
