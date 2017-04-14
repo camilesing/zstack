@@ -138,8 +138,7 @@ class HostCalculationMemoryCase extends SubCase {
         getCpuMemoryCapacityAction.sessionId = adminSession()
         GetCpuMemoryCapacityAction.Result res = getCpuMemoryCapacityAction.call()
         assert res.error == null
-        assert res.value.availableMemory == SizeUnit.GIGABYTE.toByte(24 - 3)
-        // Three Host of 8G memory ,reserved memory = 3*1 = 3
+        assert res.value.availableMemory == SizeUnit.GIGABYTE.toByte(24 - 3) // Three Host of 8G memory ,reserved memory = 3*1 = 3
         CreateVmInstanceAction createVmInstanceAction = new CreateVmInstanceAction()
         createVmInstanceAction.name = "vm1"
         createVmInstanceAction.instanceOfferingUuid = ioSpec.inventory.uuid
@@ -165,6 +164,7 @@ class HostCalculationMemoryCase extends SubCase {
         UpdateVmInstanceAction updateVmInstanceAction = new UpdateVmInstanceAction()
         updateVmInstanceAction.uuid = vm1Uuid
         updateVmInstanceAction.memorySize = SizeUnit.GIGABYTE.toByte(7)
+        updateVmInstanceAction.sessionId = adminSession()
         UpdateVmInstanceAction.Result updateVmRes = updateVmInstanceAction.call()
         assert updateVmRes.error == null
         updateVmInstanceAction.uuid = vm2Uuid
