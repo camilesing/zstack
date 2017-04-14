@@ -132,9 +132,8 @@ public class VmInstanceApiInterceptor implements ApiMessageInterceptor {
         Long availableMemory = (Long) result.get(1);
         Integer usedCpu = (Integer) result.get(2);
         Long usedMemory = (Long) result.get(3);
-        List<Tuple> tuples = SQL.New("select value from GlobalConfigVO where name=\"reservedMemory\"  or name=\"overProvisioning.memory\" or name=\"cpu.overProvisioning.ratio\"")
-        Long reservedMemory = SizeUtils.sizeStringToBytes(
-                (String) tuples.get(0).get(0));
+        List<Tuple> tuples = SQL.New("select value from GlobalConfigVO where name=\"reservedMemory\"  or name=\"overProvisioning.memory\" or name=\"cpu.overProvisioning.ratio\"").list();
+        Long reservedMemory = SizeUtils.sizeStringToBytes( (String) tuples.get(0).get(0) );
         Double overProvisioningMemory = (Double) tuples.get(0).get(1);
         Double overProvisioningCpu = (Double) tuples.get(0).get(2);
         Double totalMemory = (availableMemory + usedMemory - reservedMemory) * overProvisioningMemory;
