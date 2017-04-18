@@ -45,7 +45,7 @@ class CpuMemoryCapacityCase extends SubCase {
         env.create {
             KVMGlobalConfig.RESERVED_MEMORY_CAPACITY.updateValue("1G")
             HostGlobalConfig.AUTO_RECONNECT_ON_ERROR.updateValue(false)
-            HostGlobalConfig.PING_HOST_INTERVAL.updateValue(2)
+            HostGlobalConfig.PING_HOST_INTERVAL.updateValue(1)
             setHostDisconnecedAndGetCorrectlyCpuMemoryCapacity()
         }
     }
@@ -87,7 +87,6 @@ class CpuMemoryCapacityCase extends SubCase {
         assert res.error == null
         long result = res.value.availableMemory
         assert result == SizeUtils.sizeStringToBytes("9G")
-        // 一台host 占用1G保留内存，现在就一台host连接，所以共计10G内存，理应结果是10-1=9G。但现在很显然介计算进了另外2台host的保留内存。
     }
 
 
