@@ -58,12 +58,12 @@ class AddSMPStorageCase extends SubCase {
         addLocalPrimaryStorageAction.zoneUuid = zoneUuid
         addLocalPrimaryStorageAction.sessionId = adminSession()
         AddSharedMountPointPrimaryStorageAction.Result res = addLocalPrimaryStorageAction.call()
-        res.error == null
+        res.error != null
         addLocalPrimaryStorageAction.url = "/proc/test"
         res = addLocalPrimaryStorageAction.call()
-        res.error == null
+        res.error != null
         addLocalPrimaryStorageAction.url = "/sys/test"
         res = addLocalPrimaryStorageAction.call()
-        res.error == null
+        res.error != null
     }
 }
