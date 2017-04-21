@@ -79,7 +79,7 @@ class CpuMemoryCapacityCase extends SubCase {
 //        }
 
 
-        retryInSecs{
+        retryInSecs(60,1){
             return {
                 assert Q.New(HostVO.class).select(HostVO_.status).eq(HostVO_.uuid, kvm1Inv.uuid).findValue().toString() == HostStatus.Disconnected.toString()
                 assert Q.New(HostVO.class).select(HostVO_.status).eq(HostVO_.uuid, kvm2Inv.uuid).findValue().toString() == HostStatus.Disconnected.toString()
