@@ -21,6 +21,8 @@ import org.zstack.testlib.SubCase
 import org.zstack.utils.SizeUtils
 import org.zstack.utils.gson.JSONObjectUtil
 
+import java.util.concurrent.TimeUnit
+
 /**
  * Created by camile on 2017/4/10.
  */
@@ -54,6 +56,7 @@ class CpuMemoryCapacityCase extends SubCase {
     }
 
     void setHostDisconnecedAndGetCorrectlyCpuMemoryCapacity() {
+        TimeUnit.SECONDS.sleep(1)
         HostInventory kvm1Inv = (env.specByName("kvm1") as HostSpec).inventory
         HostInventory kvm2Inv = (env.specByName("kvm2") as HostSpec).inventory
         HostInventory kvm3Inv = (env.specByName("kvm3") as HostSpec).inventory
