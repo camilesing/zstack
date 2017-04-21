@@ -47,7 +47,8 @@ class CpuMemoryCapacityCase extends SubCase {
     void test() {
         env.create {
             KVMGlobalConfig.RESERVED_MEMORY_CAPACITY.updateValue("1G")
-            HostGlobalConfig.PING_HOST_INTERVAL.updateValue(5)
+            HostGlobalConfig.PING_HOST_INTERVAL.updateValue(1)
+            HostGlobalConfig.AUTO_RECONNECT_ON_ERROR.updateValue(false)
             setHostDisconnecedAndGetCorrectlyCpuMemoryCapacity()
         }
     }
@@ -79,7 +80,7 @@ class CpuMemoryCapacityCase extends SubCase {
 //        }
 
 
-        retryInSecs(60,1){
+        retryInSecs(){
             return {
                 assert Q.New(HostVO.class).select(HostVO_.status).eq(HostVO_.uuid, kvm1Inv.uuid).findValue().toString() == HostStatus.Disconnected.toString()
                 assert Q.New(HostVO.class).select(HostVO_.status).eq(HostVO_.uuid, kvm2Inv.uuid).findValue().toString() == HostStatus.Disconnected.toString()
