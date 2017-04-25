@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.zstack.core.componentloader.PluginRegistry;
+import org.zstack.core.config.GlobalConfigVO;
+import org.zstack.core.config.GlobalConfigVO_;
+import org.zstack.core.db.Q;
 import org.zstack.core.errorcode.ErrorFacade;
 import org.zstack.header.allocator.*;
 import org.zstack.header.core.ReturnValueCompletion;
@@ -13,6 +16,7 @@ import org.zstack.header.host.HostInventory;
 import org.zstack.header.host.HostVO;
 import org.zstack.header.vm.VmInstanceInventory;
 import org.zstack.utils.DebugUtils;
+import org.zstack.utils.SizeUtils;
 import org.zstack.utils.Utils;
 import org.zstack.utils.gson.JSONObjectUtil;
 import org.zstack.utils.logging.CLogger;
@@ -77,6 +81,7 @@ public class HostAllocatorChain implements HostAllocatorTrigger, HostAllocatorSt
 
     void reserveCapacity(final String hostUuid, final long cpu, final long memory) {
         HostCapacityUpdater updater = new HostCapacityUpdater(hostUuid);
+        String reservedMemoryOfGlobalConfig = Q.New(GlobalConfigVO.class).select(GlobalConfigVO_.value).eq(GlobalConfigVO_.name,"reservedMemory").findValue();
         updater.run(new HostCapacityUpdaterRunnable() {
             @Override
             public HostCapacityVO call(HostCapacityVO cap) {
@@ -89,7 +94,7 @@ public class HostAllocatorChain implements HostAllocatorTrigger, HostAllocatorSt
                 cap.setAvailableCpu(availCpu);
 
                 long availMemory = cap.getAvailableMemory() - ratioMgr.calculateMemoryByRatio(hostUuid, memory);
-                if (availMemory < 0) {
+                if (availMemory - SizeUtils.sizeStringToBytes(reservedMemoryOfGlobalConfig) < 0) {
                     throw new UnableToReserveHostCapacityException(
                             String.format("no enough memory[%s] on the host[uuid:%s]", memory, hostUuid));
                 }

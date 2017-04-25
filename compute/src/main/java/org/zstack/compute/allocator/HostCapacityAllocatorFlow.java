@@ -4,13 +4,17 @@ import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.zstack.compute.vm.VmLabels;
+import org.zstack.core.config.GlobalConfigVO;
+import org.zstack.core.config.GlobalConfigVO_;
 import org.zstack.core.db.DatabaseFacade;
+import org.zstack.core.db.Q;
 import org.zstack.core.logging.Log;
 import org.zstack.header.allocator.AbstractHostAllocatorFlow;
 import org.zstack.header.allocator.HostCapacityOverProvisioningManager;
 import org.zstack.header.allocator.HostCpuOverProvisioningManager;
 import org.zstack.header.exception.CloudRuntimeException;
 import org.zstack.header.host.HostVO;
+import org.zstack.utils.SizeUtils;
 import org.zstack.utils.Utils;
 import org.zstack.utils.logging.CLogger;
 

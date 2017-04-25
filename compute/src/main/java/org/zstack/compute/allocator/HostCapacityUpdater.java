@@ -12,6 +12,7 @@ import org.zstack.utils.logging.CLogger;
 
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**

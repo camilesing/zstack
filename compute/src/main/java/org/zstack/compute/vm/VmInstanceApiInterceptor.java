@@ -33,6 +33,7 @@ import org.zstack.header.vm.*;
 import org.zstack.header.zone.ZoneState;
 import org.zstack.header.zone.ZoneVO;
 import org.zstack.header.zone.ZoneVO_;
+import org.zstack.utils.SizeUtils;
 import org.zstack.utils.network.NetworkUtils;
 
 import static org.zstack.core.Platform.argerr;
@@ -334,6 +335,8 @@ public class VmInstanceApiInterceptor implements ApiMessageInterceptor {
     }
 
     private void validate(APICreateVmInstanceMsg msg) {
+
+
         SimpleQuery<InstanceOfferingVO> iq = dbf.createQuery(InstanceOfferingVO.class);
         iq.select(InstanceOfferingVO_.state);
         iq.add(InstanceOfferingVO_.uuid, Op.EQ, msg.getInstanceOfferingUuid());
@@ -466,6 +469,20 @@ public class VmInstanceApiInterceptor implements ApiMessageInterceptor {
                 throw new ApiMessageInterceptionException(argerr("defaultL3NetworkUuid[uuid:%s] is not in l3NetworkUuids%s", msg.getDefaultL3NetworkUuid(), msg.getL3NetworkUuids()));
             }
         }
+        //这里得不到host的内存，把逻辑放到后面去
+//        Tuple result = SQL.New("select hc.availableMemory ,gf.value, io.memorySize " +
+//                "from HostCapacityVO hc, GlobalConfigVO gf,InstanceOfferingVO io " +
+//                " where hc.uuid = :huuid and gf.name = :gfName and io.uuid= :ioUuid", Tuple.class)
+//                .param("huuid", msg.getHostUuid())
+//                .param("gfName", "reservedMemory")
+//                .param("ioUuid", msg.getInstanceOfferingUuid())
+//                .find();
+//        Long avaliableMemory = Long.parseLong(result.get(0).toString());
+//        Long reserveMemory = SizeUtils.sizeStringToBytes(result.get(1).toString());
+//        Long requestMemorySize =  Long.parseLong( result.get(2).toString());
+//        if (requestMemorySize > (avaliableMemory - reserveMemory)) {
+//            throw new ApiMessageInterceptionException(argerr("the host doesn't have enough memory"));
+//        }
     }
 
     private void validate(APIDestroyVmInstanceMsg msg) {
