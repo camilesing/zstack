@@ -116,7 +116,8 @@ public class Platform {
                 }
                 valueToSet = ret;
             } else {
-                String value = getGlobalProperty(name).trim();
+                //String value = getGlobalProperty(name).trim();
+                String value = propertiesMap.get(name);
                 if (value == null && at.defaultValue().equals(GlobalProperty.DEFAULT_NULL_STRING) && at.required()) {
                     throw new IllegalArgumentException(String.format("A required global property[%s] missing in zstack.properties", name));
                 }
