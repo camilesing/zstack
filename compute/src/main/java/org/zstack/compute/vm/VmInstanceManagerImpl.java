@@ -1199,6 +1199,10 @@ public class VmInstanceManagerImpl extends AbstractService implements
                 return usages;
             }
 
+            private synchronized void check(APICreateVmInstanceMsg msg, Map<String, QuotaPair> pairs) {
+                checkCreateVmInstance(msg,pairs);
+            }
+
 
             private void check(APIStartVmInstanceMsg msg, Map<String, Quota.QuotaPair> pairs) {
                 checkStartVmInstance(msg.getSession().getAccountUuid(), msg.getVmInstanceUuid(), pairs);
@@ -1208,7 +1212,7 @@ public class VmInstanceManagerImpl extends AbstractService implements
                 checkStartVmInstance(msg.getAccountUuid(), msg.getVmInstanceUuid(), pairs);
             }
 
-            private void checkStartVmInstance(String currentAccountUuid,
+            private synchronized void checkStartVmInstance(String currentAccountUuid,
                                               String vmInstanceUuid,
                                               Map<String, Quota.QuotaPair> pairs) {
                 String resourceTargetOwnerAccountUuid = new QuotaUtil().getResourceOwnerAccountUuid(vmInstanceUuid);
@@ -1220,9 +1224,10 @@ public class VmInstanceManagerImpl extends AbstractService implements
                                               String resourceTargetOwnerAccountUuid,
                                               String vmInstanceUuid,
                                               Map<String, Quota.QuotaPair> pairs) {
-                long vmNumQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_NUM).getValue();
-                long cpuNumQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_CPU_NUM).getValue();
-                long memoryQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_MEMORY_SIZE).getValue();
+
+                    long vmNumQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_NUM).getValue();
+                    long cpuNumQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_CPU_NUM).getValue();
+                    long memoryQuota = pairs.get(VmInstanceConstant.QUOTA_VM_RUNNING_MEMORY_SIZE).getValue();
 
                 VmQuotaUtil.VmQuota vmQuotaUsed = new VmQuotaUtil().getUsedVmCpuMemory(resourceTargetOwnerAccountUuid);
                 //
@@ -1468,7 +1473,7 @@ public class VmInstanceManagerImpl extends AbstractService implements
             }
 
             @Transactional(readOnly = true)
-            private void check(APICreateVmInstanceMsg msg, Map<String, QuotaPair> pairs) {
+            private void checkCreateVmInstance(APICreateVmInstanceMsg msg, Map<String, QuotaPair> pairs) {
                 String currentAccountUuid = msg.getSession().getAccountUuid();
                 String resourceTargetOwnerAccountUuid = msg.getSession().getAccountUuid();
 
