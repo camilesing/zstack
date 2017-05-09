@@ -93,35 +93,42 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
                         name = "pubL3"
 
                         ip {
-                            startIp = "12.16.10.2"
-                            endIp = "12.16.10.254"
+                            startIp = "192.168.100.2"
+                            endIp = "192.168.100.254"
                             netmask = "255.255.255.0"
-                            gateway = "12.16.10.1"
+                            gateway = "192.168.100.1"
                         }
                         ip {
-                            startIp = "12.16.11.2"
-                            endIp = "12.16.11.254"
+                            startIp = "192.168.101.2"
+                            endIp = "192.168.101.254"
                             netmask = "255.255.255.0"
-                            gateway = "12.16.11.1"
+                            gateway = "192.168.101.1"
                         }
                         ip {
-                            startIp = "12.16.12.2"
-                            endIp = "12.16.12.254"
+                            startIp = "192.168.102.2"
+                            endIp = "192.168.102.254"
                             netmask = "255.255.255.0"
-                            gateway = "12.16.12.1"
+                            gateway = "192.168.102.1"
                         }
                         ip {
-                            startIp = "12.16.13.2"
-                            endIp = "12.16.13.254"
+                            startIp = "192.168.103.2"
+                            endIp = "192.168.103.254"
                             netmask = "255.255.255.0"
-                            gateway = "12.16.13.1"
+                            gateway = "192.168.103.1"
                         }
                         ip {
-                            startIp = "12.16.14.2"
-                            endIp = "12.16.14.254"
+                            startIp = "192.168.104.2"
+                            endIp = "192.168.104.254"
                             netmask = "255.255.255.0"
-                            gateway = "12.16.14.1"
+                            gateway = "192.168.104.1"
                         }
+                        ip {
+                            startIp = "192.168.105.2"
+                            endIp = "192.168.105.254"
+                            netmask = "255.255.255.0"
+                            gateway = "192.168.105.1"
+                        }
+
                     }
                 }
 
