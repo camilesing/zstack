@@ -20,7 +20,7 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
     def thisImageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
     def _1CPU1G = (env.specByName("instanceOffering") as InstanceOfferingSpec).inventory.uuid
     def l3uuid = (env.specByName("pubL3") as L3NetworkSpec).inventory.uuid
-    int vmCount = 1000
+    Long vmCount = 1000
     List<String> uuids
 
 
@@ -158,7 +158,7 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
         }
     }
 
-    void testCreateVm(int num) {
+    void testCreateVm(Long num) {
         for (int i = 0; i < num; i++) {
             createVmInstance {
                 def vmName = "VM" + i
