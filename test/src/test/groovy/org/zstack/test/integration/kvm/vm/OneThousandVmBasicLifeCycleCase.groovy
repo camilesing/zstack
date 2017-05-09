@@ -91,14 +91,36 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
 
                     l3Network {
                         name = "pubL3"
-
                         ip {
                             startIp = "10.101.20.2"
                             endIp = "10.101.20.254"
                             netmask = "255.255.255.0"
                             gateway = "10.101.20.1"
                         }
-
+                        ip {
+                            startIp = "10.101.21.2"
+                            endIp = "10.101.21.254"
+                            netmask = "255.255.255.0"
+                            gateway = "10.101.21.1"
+                        }
+                        ip {
+                            startIp = "10.101.22.2"
+                            endIp = "10.101.22.254"
+                            netmask = "255.255.255.0"
+                            gateway = "10.101.22.1"
+                        }
+                        ip {
+                            startIp = "10.101.23.2"
+                            endIp = "10.101.23.254"
+                            netmask = "255.255.255.0"
+                            gateway = "10.101.23.1"
+                        }
+                        ip {
+                            startIp = "10.101.24.2"
+                            endIp = "10.101.24.254"
+                            netmask = "255.255.255.0"
+                            gateway = "10.101.24.1"
+                        }
                     }
                 }
 
