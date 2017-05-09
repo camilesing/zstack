@@ -13,7 +13,7 @@ import org.zstack.testlib.SubCase
 import org.zstack.utils.data.SizeUnit
 
 /**
- * Created by xing5 on 2017/2/22.
+ * Created by camile on 2017/5/9.
  */
 class OneThousandVmBasicLifeCycleCase extends SubCase {
     EnvSpec env
