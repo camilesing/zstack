@@ -17,9 +17,6 @@ import org.zstack.utils.data.SizeUnit
  */
 class OneThousandVmBasicLifeCycleCase extends SubCase {
     EnvSpec env
-    def thisImageUuid
-    def _1CPU1G
-    def l3uuid
     Long vmCount = 1000
     List<String> uuids
 
@@ -138,9 +135,7 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
 
     @Override
     void test() {
-        thisImageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
-        _1CPU1G = (env.specByName("instanceOffering") as InstanceOfferingSpec).inventory.uuid
-        l3uuid = (env.specByName("pubL3") as L3NetworkSpec).inventory.uuid
+
         env.create {
             testCreateVm(vmCount)
             testStopVm()
@@ -162,6 +157,9 @@ class OneThousandVmBasicLifeCycleCase extends SubCase {
     }
 
     void testCreateVm(Long num) {
+        String thisImageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
+        String _1CPU1G = (env.specByName("instanceOffering") as InstanceOfferingSpec).inventory.uuid
+        String l3uuid = (env.specByName("pubL3") as L3NetworkSpec).inventory.uuid
         for (int i = 0; i < num; i++) {
             createVmInstance {
                 def vmName = "VM" + i
