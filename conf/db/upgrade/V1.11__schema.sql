@@ -651,6 +651,14 @@ CREATE TABLE `ResourceVO` (
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO ResourceVO (uuid,resourceType) SELECT t.resourceUuid , t.resourceType FROM AccountResourceRefVO t;
+INSERT INTO ResourceVO (uuid,resourceType) SELECT t.resourceUuid , t.resourceType FROM SystemTagVO t;
+INSERT INTO ResourceVO (uuid,resourceType) SELECT t.resourceUuid , t.resourceType FROM UserTagVO t;
+UPDATE JsonLabelVO SET resourceUuid=UUID();
+UPDATE JsonLabelVO SET resourceUuid=replace(resourceUuid,'-','7');
+INSERT INTO ResourceVO (uuid) SELECT t.resourceUuid FROM JsonLabelVO t;
+
+
 ALTER TABLE AccountResourceRefVO ADD CONSTRAINT fkAccountResourceRefVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
 ALTER TABLE SystemTagVO ADD CONSTRAINT fkSystemTagVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
 ALTER TABLE UserTagVO ADD CONSTRAINT fkUserTagVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
