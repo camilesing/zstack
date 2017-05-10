@@ -651,6 +651,8 @@ CREATE TABLE `ResourceVO` (
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO ResourceVO (uuid,resourceType) SELECT t.resourceUuid , t.resourceType FROM AccountResourceRefVO t;
+
 ALTER TABLE AccountResourceRefVO ADD CONSTRAINT fkAccountResourceRefVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
 ALTER TABLE SystemTagVO ADD CONSTRAINT fkSystemTagVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
 ALTER TABLE UserTagVO ADD CONSTRAINT fkUserTagVOResourceVO FOREIGN KEY (resourceUuid) REFERENCES ResourceVO (uuid) ON DELETE CASCADE;
