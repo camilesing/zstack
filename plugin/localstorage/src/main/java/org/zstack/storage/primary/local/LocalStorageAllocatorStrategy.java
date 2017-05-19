@@ -19,6 +19,7 @@ import org.zstack.storage.primary.DiskCapacityTracer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.zstack.utils.CollectionDSL.e;
 import static org.zstack.utils.CollectionDSL.map;
@@ -39,7 +40,10 @@ public class LocalStorageAllocatorStrategy implements PrimaryStorageAllocatorStr
 
     @Override
     public PrimaryStorageInventory allocate(PrimaryStorageAllocationSpec spec) {
-        return allocateAllCandidates(spec).get(0);
+        Random random = new Random();
+        List<PrimaryStorageInventory>  candidates=  allocateAllCandidates(spec);
+        int psInventoryIndex = random.nextInt(candidates.size()-1);
+        return candidates.get(psInventoryIndex);
     }
 
     @Override
