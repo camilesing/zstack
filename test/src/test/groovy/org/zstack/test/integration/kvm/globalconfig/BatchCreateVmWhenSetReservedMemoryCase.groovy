@@ -165,8 +165,8 @@ class BatchCreateVmWhenSetReservedMemoryCase extends SubCase {
         action.name = "reservedMemory"
         action.value = "1G"
         action.sessionId = Test.currentEnvSpec.session.uuid
-        UpdateGlobalConfigAction.Result res = action.call()
-        assert res.error == null
+        UpdateGlobalConfigAction.Result res0 = action.call()
+        assert res0.error == null
 
 
         def threads = []
