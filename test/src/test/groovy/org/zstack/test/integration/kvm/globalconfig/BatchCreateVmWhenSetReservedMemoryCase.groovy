@@ -7,6 +7,7 @@ import org.zstack.header.vm.VmInstanceVO_
 import org.zstack.network.securitygroup.SecurityGroupConstant
 import org.zstack.sdk.CreateVmInstanceAction
 import org.zstack.sdk.GetCpuMemoryCapacityAction
+import org.zstack.sdk.UpdateGlobalConfigAction
 import org.zstack.test.integration.kvm.hostallocator.AllocatorTest
 import org.zstack.testlib.*
 import org.zstack.utils.data.SizeUnit
@@ -158,6 +159,15 @@ class BatchCreateVmWhenSetReservedMemoryCase extends SubCase {
         def thisImageUuid = (env.specByName("image1") as ImageSpec).inventory.uuid
         def _1CPU1G = (env.specByName("instanceOffering") as InstanceOfferingSpec).inventory.uuid
         def l3uuid = (env.specByName("pubL3") as L3NetworkSpec).inventory.uuid
+
+        def action = new UpdateGlobalConfigAction()
+        action.category = "kvm"
+        action.name = "reservedMemory"
+        action.value = "1G"
+        action.sessionId = Test.currentEnvSpec.session.uuid
+        UpdateGlobalConfigAction.Result res = action.call()
+        assert res.error == null
+
 
         def threads = []
         1.upto(num, {
