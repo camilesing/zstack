@@ -418,7 +418,11 @@ public class VolumeSnapshotManagerImpl extends AbstractService implements
                             svo.setFormat(snapshot.getFormat());
                         }
                         svo = dbf.updateAndRefresh(svo);
-                        new FireSnapShotCanonicalEvent().fireSnapShotStatusChangedEvent(svo.getStatus(),snapshot);
+                        new FireSnapShotCanonicalEvent().
+                                fireSnapShotStatusChangedEvent(
+                                        VolumeSnapshotStatus.valueOf(snapshot.getStatus()),
+                                        VolumeSnapshotInventory.valueOf(svo))
+                        ;
                         ret.setInventory(VolumeSnapshotInventory.valueOf(svo));
                         bus.reply(msg, ret);
                     }
