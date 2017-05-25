@@ -1,7 +1,9 @@
 package org.zstack.image;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
+import org.zstack.core.CoreGlobalProperty;
 import org.zstack.core.Platform;
 import org.zstack.core.asyncbatch.AsyncBatchRunner;
 import org.zstack.core.asyncbatch.LoopAsyncBatch;
@@ -24,10 +26,12 @@ import org.zstack.core.workflow.FlowChainBuilder;
 import org.zstack.core.workflow.ShareFlow;
 import org.zstack.header.AbstractService;
 import org.zstack.header.core.AsyncLatch;
+import org.zstack.header.core.BypassWhenUnitTest;
 import org.zstack.header.core.NoErrorCompletion;
 import org.zstack.header.core.workflow.*;
 import org.zstack.header.errorcode.ErrorCode;
 import org.zstack.header.errorcode.ErrorCodeList;
+import org.zstack.header.errorcode.OperationFailureException;
 import org.zstack.header.errorcode.SysErrors;
 import org.zstack.header.exception.CloudRuntimeException;
 import org.zstack.header.identity.*;
@@ -378,7 +382,7 @@ public class ImageManagerImpl extends AbstractService implements ImageManager, M
 
                                 if (fail == backupStorageNum) {
                                     ErrorCode errCode = operr("failed to create data volume template from volume[uuid:%s] on all backup storage%s. See cause for one of errors",
-                                                    msg.getVolumeUuid(), msg.getBackupStorageUuids()).causedBy(err);
+                                            msg.getVolumeUuid(), msg.getBackupStorageUuids()).causedBy(err);
 
                                     trigger.fail(errCode);
                                 } else {
@@ -889,6 +893,10 @@ public class ImageManagerImpl extends AbstractService implements ImageManager, M
             vo.setUuid(Platform.getUuid());
         }
 
+        if (!CoreGlobalProperty.UNIT_TEST_ON){
+            long imageSizeAsked = getImageSize(msg);
+            vo.setActualSize(imageSizeAsked);
+        }
         vo.setName(msg.getName());
         vo.setDescription(msg.getDescription());
         if (msg.getFormat().equals(ImageConstant.ISO_FORMAT_STRING)) {
@@ -1383,5 +1391,39 @@ public class ImageManagerImpl extends AbstractService implements ImageManager, M
     @Transactional(readOnly = true)
     public void resourceOwnerPreChange(AccountResourceRefInventory ref, String newOwnerUuid) {
 
+    }
+
+    @BypassWhenUnitTest
+    private Long getImageSize(final APIAddImageMsg msg){
+        long imageSizeAsked;
+        String url = msg.getUrl();
+        url = url.trim();
+        if (url.startsWith("file:///")) {
+            GetImageSizeOnBackupStorageMsg cmsg = new GetImageSizeOnBackupStorageMsg();
+            cmsg.setBackupStorageUuid(msg.getBackupStorageUuids().get(0));
+            cmsg.setImageUrl(url);
+            cmsg.setImageUuid(msg.getResourceUuid());
+            bus.makeTargetServiceIdByResourceUuid(cmsg, BackupStorageConstant.SERVICE_ID,
+                    msg.getBackupStorageUuids().get(0));
+            MessageReply reply = bus.call(cmsg);
+            if (!reply.isSuccess()) {
+                throw new OperationFailureException(reply.getError());
+            }
+
+            imageSizeAsked = ((GetImageSizeOnBackupStorageReply) reply).getSize();
+        } else if (url.startsWith("http") || url.startsWith("https")) {
+            String len="";
+            try {
+                HttpHeaders header = restf.getRESTTemplate().headForHeaders(url);
+                len = header.getFirst("Content-Length");
+            } catch (Exception e) {
+                logger.warn(String.format("cannot get image.  The image url : %s. description: %s.name: %s",
+                        url, msg.getDescription(), msg.getName()));
+            }
+            imageSizeAsked = len == "" ? 0 : Long.valueOf(len);
+        } else {
+            throw new CloudRuntimeException("should not be here");
+        }
+        return imageSizeAsked;
     }
 }

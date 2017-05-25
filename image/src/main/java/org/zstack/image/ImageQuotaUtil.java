@@ -88,7 +88,7 @@ public class ImageQuotaUtil {
         return imageSize;
     }
 
-    @BypassWhenUnitTest
+    //@BypassWhenUnitTest
     public void checkImageSizeQuotaUseHttpHead(APIAddImageMsg msg, Map<String, Quota.QuotaPair> pairs) {
         long imageSizeQuota = pairs.get(ImageConstant.QUOTA_IMAGE_SIZE).getValue();
         long imageSizeUsed = new ImageQuotaUtil().getUsedImageSize(msg.getSession().getAccountUuid());
