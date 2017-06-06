@@ -82,3 +82,5 @@ UPDATE ResourceVO SET resourceType = "VolumeVO" WHERE resourceType = "VolumeEO";
 UPDATE ResourceVO SET resourceType = "VolumeSnapshotVO" WHERE resourceType = "VolumeSnapshotEO";
 UPDATE ResourceVO SET resourceType = "VolumeSnapshotTreeVO" WHERE resourceType = "VolumeSnapshotTreeEO";
 UPDATE ResourceVO SET resourceType = "ZoneVO" WHERE resourceType = "ZoneEO";
+
+ALTER TABLE JsonLabelVO ADD CONSTRAINT fkJsonLabelVOResourceVO FOREIGN KEY (resourceName) REFERENCES ResourceVO (resourceName) ON UPDATE CASCADE;
